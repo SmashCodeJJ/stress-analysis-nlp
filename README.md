@@ -73,12 +73,14 @@ Model comparison on the held-out test set:
 
 | Model | Accuracy | Stress F1 | Notes |
 |-------|----------|-----------|-------|
-| **Multinomial Naive Bayes** | **72–73%** | **0.76** | Best balance of precision/recall for stress class |
-| Random Forest | 75% | 0.77 | Highest overall accuracy |
-| SVM | 71% | — | Strong linear separator |
-| KNN (k=10) | 59% | — | Lower performance on sparse text features |
+| **Multinomial Naive Bayes** | **71%** | **0.75** | Strong stress recall (81%) |
+| **Random Forest** | **73%** | **0.76** | Best overall accuracy (verified run) |
+| SVM | 70% | 0.72 | Balanced precision/recall |
+| KNN (k=10) | 58% | 0.46 | Lower performance on sparse text features |
 
-**Best model:** Multinomial Naive Bayes — selected for its strong F1 score (0.76) on the stress class and efficient inference, making it suitable for deployment.
+**Best model (verified):** Random Forest — 73% accuracy, stress F1=0.76 (re-run on 3,553 samples, Aug 2026).
+
+See [`results/model_comparison.json`](results/model_comparison.json) for full classification reports.
 
 ### Classification Report (Multinomial Naive Bayes)
 
@@ -129,6 +131,13 @@ Download `dreaddit.csv` from [Kaggle](https://www.kaggle.com/datasets/menekse/st
 
 ```bash
 jupyter notebook stress_detection.ipynb
+```
+
+### 5. Run the full pipeline (reproducible script)
+
+```bash
+python scripts/download_dataset.py   # downloads dreaddit.csv if missing
+python run_stress_analysis.py        # trains all 4 models, saves results/
 ```
 
 ---
