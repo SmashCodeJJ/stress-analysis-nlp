@@ -1,5 +1,7 @@
 # Text Mining for Stress Analysis Using Natural Language Processing (NLP) Techniques
 
+![CI](https://github.com/SmashCodeJJ/stress-analysis-nlp/actions/workflows/ci.yml/badge.svg)
+
 **Author:** Youxin Zhuo ([SmashCodeJJ](https://github.com/SmashCodeJJ))  
 **Institution:** Penn State University  
 **Domain:** Natural Language Processing · Machine Learning · Mental Health Text Classification
