@@ -60,7 +60,7 @@ Each classifier is wrapped in a scikit-learn `Pipeline`:
 TfidfVectorizer / CountVectorizer → Classifier
 ```
 
-Hyperparameter tuning via **GridSearchCV** is applied to the Random Forest model (tri-gram features).
+Hyperparameter tuning via **GridSearchCV** is applied to the Random Forest model (tri-gram features). ComplementNB uses tuned TF-IDF settings (`max_df=0.85`, `alpha=1.0`) from cross-validation.
 
 ### 4. Classifiers Evaluated
 
@@ -81,31 +81,32 @@ Model comparison on the held-out test set (711 samples, verified run):
 
 | Model | Accuracy | Stress F1 | Stress Recall | Notes |
 |-------|----------|-----------|---------------|-------|
-| **Random Forest + Count (1,3)** | **73%** | **0.76** | **82%** | **Best model** — tri-gram bag-of-words |
+| **ComplementNB + TF-IDF (tuned)** | **73%** | **0.77** | **85%** | **Best model** — tuned `max_df=0.85`, `alpha=1.0` |
+| Random Forest + Count (1,3) | 73% | 0.76 | 82% | Tri-gram bag-of-words |
 | Random Forest + Count (1,3) [tuned] | 72% | 0.75 | 82% | GridSearchCV optimized |
 | LinearSVC + TF-IDF (1,2) | 72% | 0.74 | 76% | Fast linear classifier |
 | Logistic Regression + TF-IDF (1,2) | 72% | 0.74 | 76% | Balanced class weights |
 | MultinomialNB + TF-IDF (1,2) | 71% | 0.74 | 78% | Strong stress recall |
-| ComplementNB + TF-IDF (1,2) | 71% | 0.73 | 76% | Good for imbalanced text |
+| ComplementNB + TF-IDF (1,2) | 71% | 0.73 | 76% | Default hyperparameters |
 | BernoulliNB + Binary Count (1,2) | 71% | 0.73 | 74% | Binary word presence |
 
-**Best model (verified):** Random Forest + CountVectorizer(1,3) — **73% accuracy**, stress F1=**0.76**, stress recall=**82%**.
+**Best model (verified):** ComplementNB + TF-IDF (tuned) — **73% accuracy**, stress F1=**0.77**, stress recall=**85%**.
 
 Improvements over the original baseline (single CountVectorizer, no n-grams):
-- Tri-gram features (+3% accuracy vs basic Random Forest pipeline)
-- TF-IDF bi-grams for Naive Bayes and linear models
+- Tuned ComplementNB with TF-IDF bi-grams (+4% stress F1 vs original Random Forest baseline)
+- Tri-gram features for Random Forest (+3% accuracy vs basic pipeline)
 - GridSearchCV hyperparameter tuning for Random Forest
 - Preprocessing cache for reproducible CI runs
 
 See [`results/model_comparison.json`](results/model_comparison.json) for full classification reports and sample predictions.
 
-### Classification Report (Best Model: Random Forest + Count 1,3)
+### Classification Report (Best Model: ComplementNB + TF-IDF tuned)
 
 ```
               precision    recall  f1-score   support
 
-   no stress       0.76      0.63      0.69       339
-      stress       0.71      0.82      0.76       372
+   no stress       0.79      0.60      0.68       339
+      stress       0.70      0.85      0.77       372
 
     accuracy                           0.73       711
 ```
@@ -177,10 +178,10 @@ python run_stress_analysis.py        # trains 6 models + GridSearch, saves resul
 
 ## Key Learnings
 
-- **Tri-grams help tree models:** Random Forest with CountVectorizer(1,3) outperforms unigram-only baselines.
+- **Tuned ComplementNB wins on F1:** TF-IDF bi-grams with `max_df=0.85` and `alpha=1.0` reach stress F1=0.77 — highest among all configs tested.
+- **Tri-grams help tree models:** Random Forest with CountVectorizer(1,3) matches accuracy but slightly lower F1.
 - **TF-IDF improves linear models:** Bi-gram TF-IDF features boost LinearSVC and Logistic Regression over raw counts.
-- **ComplementNB for imbalance:** ComplementNB handles class imbalance better than standard MultinomialNB on this dataset.
-- **High stress recall:** The best model catches 82% of stress posts — useful when missing stress cases is costly.
+- **High stress recall:** The best model catches 85% of stress posts — useful when missing stress cases is costly.
 
 ---
 

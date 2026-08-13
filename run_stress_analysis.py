@@ -30,6 +30,12 @@ TFIDF_KWARGS = {
     "max_df": 0.9,
     "sublinear_tf": True,
 }
+TFIDF_TUNED_KWARGS = {
+    "ngram_range": (1, 2),
+    "min_df": 2,
+    "max_df": 0.85,
+    "sublinear_tf": True,
+}
 COUNT_BIGRAM_KWARGS = {
     "ngram_range": (1, 2),
     "min_df": 2,
@@ -43,13 +49,11 @@ COUNT_TRIGRAM_KWARGS = {
 }
 
 SAMPLE_TEXTS = [
-    "I am feeling very stressed lately because of my workload at work. I have been working long hours and feeling overwhelmed.",
-    "The weather outside is lovely today. The birds are chirping, and the trees are swaying in the breeze.",
-    "The sun is shining bright today, and the birds are singing happily in the trees. I feel calm and relaxed.",
-    "We'd be saving so much money with this.",
-    "Despite the stress of daily life, I always make time for things that bring me joy.",
-    "My heart is racing and I can't seem to catch my breath.",
+    "I have been having panic attacks every day and I do not know how to cope anymore.",
+    "My anxiety is through the roof and I cannot stop worrying about everything.",
     "I can't seem to sleep at night because I'm so anxious.",
+    "The weather outside is lovely today. The birds are chirping, and the trees are swaying in the breeze.",
+    "Just finished watching a great movie last night, highly recommend it to everyone.",
 ]
 
 
@@ -129,6 +133,13 @@ def evaluate_pipeline(name: str, pipeline: Pipeline, x_train, x_test, y_train, y
 
 def build_model_configs() -> list[tuple[str, Pipeline]]:
     return [
+        (
+            "ComplementNB + Tfidf (tuned)",
+            Pipeline([
+                ("vectorizer", TfidfVectorizer(**TFIDF_TUNED_KWARGS)),
+                ("classifier", ComplementNB(alpha=1.0)),
+            ]),
+        ),
         (
             "ComplementNB + Tfidf(1,2)",
             Pipeline([
