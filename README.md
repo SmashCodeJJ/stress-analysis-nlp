@@ -3,7 +3,8 @@
 ![CI](https://github.com/SmashCodeJJ/stress-analysis-nlp/actions/workflows/ci.yml/badge.svg)
 
 **Author:** Youxin Zhuo ([SmashCodeJJ](https://github.com/SmashCodeJJ))  
-**Institution:** Penn State University  
+**Education:** B.S., Pennsylvania State University · Graduate Student, University of Pennsylvania (UPenn)  
+**Institution:** Penn State University (undergraduate project)  
 **Domain:** Natural Language Processing · Machine Learning · Mental Health Text Classification
 
 ---
@@ -14,7 +15,7 @@ This project builds a machine learning pipeline to classify text as **stress** o
 
 ## Problem Statement
 
-Mental health stress detection from text is a valuable NLP application. This project implements a full pipeline — from raw text to trained classifiers — and benchmarks four algorithms on a labeled Reddit stress dataset.
+Mental health stress detection from text is a valuable NLP application. This project implements a full pipeline — from raw text to trained classifiers — and benchmarks six classifiers on a labeled Reddit stress dataset.
 
 ---
 
@@ -23,11 +24,11 @@ Mental health stress detection from text is a valuable NLP application. This pro
 | Property | Value |
 |----------|-------|
 | Source | [Dreaddit Dataset (Kaggle)](https://www.kaggle.com/datasets/menekse/stress-analysis-for-social-media) |
-| Samples | ~3,000+ labeled posts |
+| Samples | 3,553 labeled posts |
 | Features | Text content + metadata (subreddit, label, etc.) |
 | Labels | `stress` (1) vs `no stress` (0) |
 
-> **Note:** Download `dreaddit.csv` from Kaggle and place it in the project root before running the notebook.
+> **Note:** Run `python scripts/download_dataset.py` to fetch `dreaddit.csv` automatically from Hugging Face, or download manually from [Kaggle](https://www.kaggle.com/datasets/menekse/stress-analysis-for-social-media).
 
 ---
 
@@ -149,7 +150,11 @@ python -m spacy download en_core_web_sm
 
 ### 3. Download the dataset
 
-Download `dreaddit.csv` from [Kaggle](https://www.kaggle.com/datasets/menekse/stress-analysis-for-social-media) and place it in the project root.
+```bash
+python scripts/download_dataset.py   # downloads dreaddit.csv from Hugging Face
+```
+
+Or download `dreaddit.csv` manually from [Kaggle](https://www.kaggle.com/datasets/menekse/stress-analysis-for-social-media) and place it in the project root.
 
 ### 4. Run the notebook
 
