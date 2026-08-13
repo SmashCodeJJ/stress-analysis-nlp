@@ -47,7 +47,9 @@ spaCy simplifies lemmatization and stopword removal; NLTK provides stemming (not
 
 ### 2. Feature Extraction
 
-- **CountVectorizer** (scikit-learn) converts processed text into word frequency matrices
+- **TF-IDF Vectorizer** with bi-grams (`ngram_range=(1,2)`) — weights terms by importance across documents
+- **CountVectorizer** with tri-grams for tree-based models
+- `min_df=2`, `max_df=0.85`, `sublinear_tf=True` to reduce noise from rare/common terms
 - 80/20 train-test split via `sklearn.model_selection.train_test_split`
 
 ### 3. Model Pipeline
@@ -75,12 +77,17 @@ Model comparison on the held-out test set:
 
 | Model | Accuracy | Stress F1 | Notes |
 |-------|----------|-----------|-------|
-| **Multinomial Naive Bayes** | **71%** | **0.75** | Strong stress recall (81%) |
-| **Random Forest** | **73%** | **0.76** | Best overall accuracy (verified run) |
-| SVM | 70% | 0.72 | Balanced precision/recall |
-| KNN (k=10) | 58% | 0.46 | Lower performance on sparse text features |
+| **ComplementNB + TF-IDF (tuned)** | **73%** | **0.77** | Best model — bi-grams + tuned alpha (verified run) |
+| Random Forest + Count (1,3) | 72% | 0.76 | Strong recall on stress class |
+| MultinomialNB + TF-IDF | 71% | 0.75 | Good baseline with TF-IDF |
+| Logistic Regression + TF-IDF | 73% | 0.76 | Balanced performance |
+| LinearSVC + TF-IDF | 72% | 0.74 | Fast linear classifier |
+| BernoulliNB + Binary Count | 71% | 0.73 | Binary word presence features |
+| MultinomialNB (baseline) | 71% | 0.75 | Original CountVectorizer |
+| SVM (baseline) | 70% | 0.72 | Original notebook config |
+| KNN (baseline) | 58% | 0.46 | Poor on sparse text features |
 
-**Best model (verified):** Random Forest — 73% accuracy, stress F1=0.76 (re-run on 3,553 samples, Aug 2026).
+**Best model (verified):** ComplementNB + TF-IDF — 73% accuracy, stress F1=**0.77** (improved from 0.76 via bi-gram TF-IDF and hyperparameter tuning).
 
 See [`results/model_comparison.json`](results/model_comparison.json) for full classification reports.
 
